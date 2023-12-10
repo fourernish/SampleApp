@@ -1,10 +1,72 @@
 ﻿@page
 @model IndexModel
+@using SampleApp.Models;
+@using SampleApp.Application;
 @{
     ViewData["Title"] = "Home page";
+    var sessionId = HttpContext.Session.GetString("SampleSession");
+    SampleAppContext _db = new SampleAppContext();
+    User currentUser = _db.Users.Where(u => u.Id == Convert.ToInt32(sessionId)).FirstOrDefault();
 }
-
+@if (currentUser == null)
+{
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    @{if(currentUser != null)
+    {
+            <h1 class="display-4">Welcome, @currentUser.Name</h1>
+    }
+    else
+    {
+            <h1 class="display-4">Welcome</h1>
+    }
+    }
+    
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a class="btn btn-lg btn-primary" href="/Sign">Регистрация</a>
+    
 </div>
+}
+else
+{
+    <div class="row">
+
+        <div class="col-md-4">
+            <h2>
+                @currentUser.Name
+            </h2>
+            <aside>
+                <section class="micropost_form">
+                    <form action="" method="post" class="form-signin" role="form">
+                        <textarea rows="4" cols="50" type="text" name="message" required autofocus></textarea>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit">Отправить</button>
+                    </form>
+                </section>
+            </aside>
+
+        </div>
+
+        <div class="col-md-8">
+            <h3>
+                Cообщения @Model.Messages.Count()
+            </h3>
+            <ol class="microposts">
+
+                @foreach (var post in Model.Messages.OrderByDescending(p => p.CreatedAt))
+                {
+                    <p>
+
+                        @Time.HumanView(post.CreatedAt)
+                        <b>@post.User.Name: </b> @post.Content
+                        @if(currentUser.Id == post.UserId || currentUser.IsAdmin){
+                            <a asp-page="Index" asp-page-handler="Delete" asp-route-id="@post.UserId" asp-route-messageid="@post.Id" class="btn btn-danger">Удалить</a>
+                        }
+                    </p>
+                }
+
+            </ol>
+        </div>
+
+
+
+    </div>
+}

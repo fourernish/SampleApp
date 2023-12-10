@@ -1,0 +1,41 @@
+﻿@using SampleApp.Models;
+
+@{
+    var sessionId = Context.Session.GetString("SampleSession");
+    SampleAppContext _db = new SampleAppContext();
+    User currentUser = _db.Users.Where(u => u.Id == Convert.ToInt32(sessionId)).FirstOrDefault();
+}
+
+<header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container">
+        <a href="/Index" id="logo">Sample</a>
+        <nav>
+            <ul class="nav navbar-nav navbar-right">
+                
+                
+                @{
+                    if (sessionId != null && currentUser != null)
+                    {
+                        <li><a href="/Users">Users</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@currentUser.Name<span class="caret"></span></a>
+
+                            <ul class="dropdown-menu">
+
+                                <li><a asp-page="/Profile" asp-route-id="@currentUser.Id">Профиль</a></li>
+                                <li><a asp-page="/Edit" asp-route-id="@currentUser.Id">Редактировать</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a asp-page="/Auth" asp-page-handler="Logout">Выход</a></li>
+
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="/Auth">Login</a></li>
+                    }
+                }
+            </ul>
+        </nav>
+    </div>
+</header>

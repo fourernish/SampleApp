@@ -1,0 +1,27 @@
+﻿@page
+@model SampleApp.Pages.EditModel
+@using SampleApp.Models;
+@{
+    ViewData["Title"] = "Edit";
+    var sessionId = HttpContext.Session.GetString("SampleSession");
+    SampleAppContext _db = new SampleAppContext();
+    User currentUser = _db.Users.Where(u => u.Id == Convert.ToInt32(sessionId)).FirstOrDefault();
+}
+<h1>Редактирование</h1>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form action="" method="POST" class="form-signin" role="form">
+            <input type="hidden" asp-for="User.Id" class="form-control" placeholder="Id" required autofocus>
+            <input type="text" asp-for="User.Name" class="form-control" placeholder="Name" required autofocus>
+            <input type="hidden" asp-for="User.Email" class="form-control" placeholder="Email" required autofocus>
+            <input type="password" asp-for="User.Password" class="form-control" placeholder="Password" required autofocus>
+            <input type="password" asp-for="User.PasswordConfirmation" class="form-control" placeholder="Confirmation" required>
+            <input type="hidden" asp-for="User.IsAdmin" class="form-control" placeholder="IsAdmin" required autofocus>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit">
+                Сохранить изменения
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+﻿@page "{id}"
+@model SampleApp.Pages.FollowedsModel
+@{
+    ViewData["Title"] = "Followeds";
+}
+<h1> Подписки @Model.ProfileUser.Name </h1>
+
+<ul>
+    @{
+        foreach (var user in Model.Followeds)
+        {
+            <li> <a class="btn btn-success" asp-page="Profile" asp-route-id="@user.Id">@user.Name</a> </li>
+            <br/>
+        }
+    }
+</ul>
+

@@ -1,0 +1,43 @@
+﻿@page "{id}"
+@model SampleApp.Pages.ProfileModel
+@using SampleApp.Models;
+@{
+    ViewData["Title"] = "Profile";
+    /*var sessionId = HttpContext.Session.GetString("SampleSession");
+    SampleAppContext _db = new SampleAppContext();
+    User currentUser = _db.Users.Where(u => u.Id == Convert.ToInt32(sessionId)).FirstOrDefault();*/
+}
+<div class="text-center">
+
+        <h1>
+            @Model.profileUser.Name
+        </h1>
+        <h2>
+            Cообщения @Model.profileUser.Microposts.Count()
+        </h2>
+        <div class="row">
+            <a class="btn btn-info" asp-page="Followers" asp-route-id="@Model.profileUser.Id">Подписчики</a>
+            <a class="btn btn-info" asp-page="Followeds" asp-route-id="@Model.profileUser.Id">Подписки</a>
+        </div>
+        <br/>
+        <form method="post">
+
+            @{
+                if (Model.currentUser != Model.profileUser)
+                {
+                    if (!Model.IsFollow)
+                    {
+                        <button class="btn btn-success" type="submit">Подписаться</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-danger" type="submit">Отписаться</button>
+                    }
+                }
+
+            }
+
+        </form>
+        <br/>
+
+</div>

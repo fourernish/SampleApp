@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SampleApp.Models;
+
 namespace SampleApp
 {
     public class Program
@@ -8,6 +11,24 @@ namespace SampleApp
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            #if DEBUG
+            builder.Services.AddSassCompiler();
+            #endif
+
+            // Подключение базы данных SQL Server
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<SampleAppContext>(options => options.UseSqlServer(connection));
+            //builder.Services.AddDbContext<SampleAppContext>(options => options.UseNpgsql(connection));
+
+            builder.Services.AddFlashes();
+
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.Name = "SampleSession";
+                //options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -25,6 +46,8 @@ namespace SampleApp
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapRazorPages();
 

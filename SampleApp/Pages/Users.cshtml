@@ -1,0 +1,51 @@
+﻿@page
+@model SampleApp.Pages.UsersModel
+@using SampleApp.Models;
+@{
+    ViewData["Title"] = "Users";
+    var sessionId = HttpContext.Session.GetString("SampleSession");
+    SampleAppContext _db = new SampleAppContext();
+    User currentUser = _db.Users.Where(u => u.Id == Convert.ToInt32(sessionId)).FirstOrDefault();
+}
+<h1>Пользователи</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Email)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    <a class="btn btn-lg btn-info" asp-page="/Profile" asp-route-id="@user.Id" >@user.Name</a>
+                </td>
+                <td>
+                    @user.Email
+                </td>
+                @{if(currentUser != null && currentUser.IsAdmin)
+                    {
+                            <td>
+                                @{if(user.Id != currentUser.Id)
+                                {
+                                    <a class="btn btn-danger" asp-page="Users" asp-page-handler="Remove" asp-route-id="@user.Id">Удалить</a>
+                                }
+                                else
+                                {
+                                    <p>Это вы</p>
+                                }
+                                }
+                            </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
